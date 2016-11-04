@@ -57,7 +57,7 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.ticketDb = new TicketInfoHelper(context).getReadableDatabase();
+        this.ticketDb = new TicketInfoHelper(App.getContext()).getReadableDatabase();
         setContentView(R.layout.activity_welcome);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
