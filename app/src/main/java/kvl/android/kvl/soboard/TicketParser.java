@@ -1,7 +1,6 @@
 package kvl.android.kvl.soboard;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -32,7 +31,6 @@ public class TicketParser extends AsyncTask {
     private String flightNumber;
     private String airline;
     private String recognizedText;
-    private Context context;
     private Bitmap imageBitmap;
     private String imageName;
     private static final String LOG_TAG = "TicketParser";
@@ -58,7 +56,7 @@ public class TicketParser extends AsyncTask {
     public Bitmap getImageBitmap() throws FileNotFoundException {
         if(imageBitmap == null) {
             try {
-                imageBitmap = BitmapFactory.decodeStream(context.getContentResolver().openInputStream(imageUri));
+                imageBitmap = BitmapFactory.decodeStream(App.getContext().getContentResolver().openInputStream(imageUri));
             } catch (FileNotFoundException e) {
                 imageNotFound = true;
                 Log.e(LOG_TAG, imageUri.toString() + " not found");
@@ -70,7 +68,7 @@ public class TicketParser extends AsyncTask {
 
     public String getImageName() {
         if(imageName == null) {
-            Cursor imageCursor = context.getContentResolver().query(imageUri, null, null, null, null);
+            Cursor imageCursor = App.getContext().getContentResolver().query(imageUri, null, null, null, null);
             int nameIndex = imageCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             imageCursor.moveToFirst();
             imageName = imageCursor.getString(nameIndex);
@@ -78,18 +76,16 @@ public class TicketParser extends AsyncTask {
         return imageName;
     }
 
-    public TicketParser(Context context, Uri imageUri, ImageListAdapter listAdapter, long recordId) throws FileNotFoundException {
+    public TicketParser(Uri imageUri, ImageListAdapter listAdapter, long recordId) throws FileNotFoundException {
         this.imageUri = imageUri;
         this.listAdapter = listAdapter;
-        this.context = context;
         this.recordId = recordId;
 
         getImageBitmap();
     }
 
 
-    public TicketParser(Context context, Uri imageUri, String airline, String flightNumber, String departureTime) throws FileNotFoundException {
-        this.context = context;
+    public TicketParser(Uri imageUri, String airline, String flightNumber, String departureTime) throws FileNotFoundException {
         this.imageUri = imageUri;
         this.airline = airline;
         this.flightNumber = flightNumber;
@@ -128,7 +124,7 @@ public class TicketParser extends AsyncTask {
 
         if (!(new File(DATA_PATH + "tessdata/" + lang + ".traineddata")).exists()) {
             try {
-                AssetManager assetManager = context.getAssets();
+                AssetManager assetManager = App.getContext().getAssets();
                 InputStream in = assetManager.open("tessdata/" + lang + ".traineddata");
                 //GZIPInputStream gin = new GZIPInputStream(in);
                 OutputStream out = new FileOutputStream(DATA_PATH
@@ -274,7 +270,7 @@ public class TicketParser extends AsyncTask {
         values.put(DatabaseSchema.TicketInfo.COLUMN_NAME_DEPARTURE_TIME, departureTime);
         String query = DatabaseSchema.TicketInfo._ID + " = " + recordId;
 
-        SQLiteDatabase ticketDb = new TicketInfoHelper(context).getWritableDatabase();
+        SQLiteDatabase ticketDb = new TicketInfoHelper(App.getContext()).getWritableDatabase();
         ticketDb.update(DatabaseSchema.TicketInfo.TABLE_NAME, values, query, null);
     }
 }

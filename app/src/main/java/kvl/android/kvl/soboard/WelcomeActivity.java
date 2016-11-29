@@ -57,7 +57,7 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.ticketDb = new TicketInfoHelper(context).getReadableDatabase();
+        this.ticketDb = new TicketInfoHelper(App.getContext()).getReadableDatabase();
         setContentView(R.layout.activity_welcome);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -136,7 +136,7 @@ public class WelcomeActivity extends AppCompatActivity {
         tickets.moveToFirst();
         while(!tickets.isAfterLast()) {
             try {
-                ImageListItem item = new ImageListItem(context, tickets);
+                ImageListItem item = new ImageListItem(tickets);
                 imageAdapter.add(item);
 
             } catch (FileNotFoundException e) {
@@ -403,7 +403,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     return;
                 }
                 try {
-                    ImageListItem newItem = new ImageListItem(data.getData(), context, imageAdapter);
+                    ImageListItem newItem = new ImageListItem(data.getData(), imageAdapter);
                     imageAdapter.add(newItem);
                     Intent displayImage = new Intent(this, BoardingPassActivity.class);
                     displayImage.putExtra(BOARDING_PASS_EXTRA, newItem.getImageUri());

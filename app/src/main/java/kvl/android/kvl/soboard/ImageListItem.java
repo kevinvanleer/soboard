@@ -1,7 +1,6 @@
 package kvl.android.kvl.soboard;
 
 import android.content.ContentValues;
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -18,7 +17,6 @@ import java.io.FileNotFoundException;
 public final class ImageListItem implements Parcelable {
     private Uri imageUri;
 
-    private Context context;
     private String userDefinedName = null;
 
     private static final String LOG_TAG = "ImageListItem";
@@ -33,30 +31,28 @@ public final class ImageListItem implements Parcelable {
 
     private long recordId;
 
-    public ImageListItem(Uri image, Context context, ImageListAdapter listAdapter) throws FileNotFoundException {
-        this.context = context;
+    public ImageListItem(Uri image, ImageListAdapter listAdapter) throws FileNotFoundException {
         this.imageUri = image;
 
-        ticketDb = new TicketInfoHelper(context).getWritableDatabase();
+        ticketDb = new TicketInfoHelper(App.getContext()).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseSchema.TicketInfo.COLUMN_NAME_IMAGE_URI, imageUri.toString());
         recordId = ticketDb.insert(DatabaseSchema.TicketInfo.TABLE_NAME, null, values);
 
-        ticketInfo = new TicketParser(this.context, this.imageUri, listAdapter, recordId);
+        ticketInfo = new TicketParser(this.imageUri, listAdapter, recordId);
         ticketInfo.execute();
     }
 
     public ImageListItem(Parcel in) {
         readFromParcel(in);
-        ticketDb = new TicketInfoHelper(context).getWritableDatabase();
+        ticketDb = new TicketInfoHelper(App.getContext()).getWritableDatabase();
     }
 
     public void removeFromDb() {
         ticketDb.delete(DatabaseSchema.TicketInfo.TABLE_NAME, DatabaseSchema.TicketInfo._ID + " = " + recordId, null);
     }
 
-    public ImageListItem(Context context, Cursor items) throws FileNotFoundException {
-        this.context = context;
+    public ImageListItem(Cursor items) throws FileNotFoundException {
         userDefinedName = items.getString(items.getColumnIndex(DatabaseSchema.TicketInfo.COLUMN_NAME_USER_DEFINED_NAME));
         recordId = items.getLong(items.getColumnIndex(DatabaseSchema.TicketInfo._ID));
         imageUri = Uri.parse(items.getString(items.getColumnIndex(DatabaseSchema.TicketInfo.COLUMN_NAME_IMAGE_URI)));
@@ -65,8 +61,8 @@ public final class ImageListItem implements Parcelable {
         String flightNumber = items.getString(items.getColumnIndex(DatabaseSchema.TicketInfo.COLUMN_NAME_FLIGHT_NUMBER));
         String departureTime = items.getString(items.getColumnIndex(DatabaseSchema.TicketInfo.COLUMN_NAME_DEPARTURE_TIME));
 
-        ticketInfo = new TicketParser(this.context, imageUri, airline, flightNumber, departureTime);
-        ticketDb = new TicketInfoHelper(this.context).getWritableDatabase();
+        ticketInfo = new TicketParser(imageUri, airline, flightNumber, departureTime);
+        ticketDb = new TicketInfoHelper(App.getContext()).getWritableDatabase();
     }
 
     public long getRecordId() { return recordId; }
