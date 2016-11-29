@@ -283,10 +283,6 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 }
 
-
-                if(shouldDelete) moveView.setAlpha(0.25f);
-                else moveView.setAlpha(1f);
-
                 return sliding;
             }
 
@@ -312,6 +308,7 @@ public class WelcomeActivity extends AppCompatActivity {
                         }
 
                         moveView.setLeft((int) (startLeft + event.getRawX() - startX));
+                        moveView.setAlpha(1.f - ((event.getRawX() - startX) / moveView.getWidth()));
                     }
                 }
             }
