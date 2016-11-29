@@ -40,7 +40,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private static final String LOG_TAG = "WelcomeActivity";
 
     private static final int PICK_IMAGE = 1;
-    private static final int REQUEST_WRITE_EXTERNAL_STORAGE = 2;
+    private static final int ADD_NEW_TICKET = 2;
+    private static final int REBUILD_TICKET_LIST = 3;
 
     ListView boardingPassListView;
     static final String BOARDING_PASS_EXTRA = "kvl.android.kvl.soboard.boarding_pass";
@@ -115,7 +116,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void addNewTicket() {
         if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, ADD_NEW_TICKET);
             Log.d(LOG_TAG, "requesting permissions to write external storage");
         } else {
             Log.d(LOG_TAG, "permission already granted");
@@ -133,6 +134,18 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private void rebuildFromDatabase() {
         Cursor tickets = ticketDb.query(DatabaseSchema.TicketInfo.TABLE_NAME, null, null, null, null, null, null, null);
+
+        if (tickets.getCount() > 0 && PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REBUILD_TICKET_LIST);
+            Log.d(LOG_TAG, "requesting permissions to write external storage");
+        } else {
+            Log.d(LOG_TAG, "permission already granted");
+            buildTicketList(tickets);
+        }
+
+    }
+
+    private void buildTicketList(Cursor tickets) {
         tickets.moveToFirst();
         while(!tickets.isAfterLast()) {
             try {
@@ -380,7 +393,7 @@ public class WelcomeActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
 
-            case REQUEST_WRITE_EXTERNAL_STORAGE:
+            case ADD_NEW_TICKET:
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     Log.d(LOG_TAG, "WRITE_EXTERNAL_STORAGE permission granted");
                     getImage();
@@ -388,6 +401,13 @@ public class WelcomeActivity extends AppCompatActivity {
                     Log.d(LOG_TAG, "WRITE_EXTERNAL_STORAGE permission denied");
                 }
                 break;
+            case REBUILD_TICKET_LIST:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Log.d(LOG_TAG, "WRITE_EXTERNAL_STORAGE permission granted");
+                    buildTicketList(ticketDb.query(DatabaseSchema.TicketInfo.TABLE_NAME, null, null, null, null, null, null, null));
+                } else {
+                    Log.d(LOG_TAG, "WRITE_EXTERNAL_STORAGE permission denied");
+                }
             default:
                 break;
         }
