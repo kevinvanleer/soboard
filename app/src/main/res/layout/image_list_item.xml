@@ -70,8 +70,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:text="Medium Text"
-                android:id="@+id/textView_imageName" />
+                android:id="@+id/textView_imageName"
+                android:text="@string/ticket_name_hint" />
 
             <EditText
                 android:id="@+id/editText_imageName"
