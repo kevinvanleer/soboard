@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -155,6 +156,8 @@ public class WelcomeActivity extends AppCompatActivity {
             } catch (FileNotFoundException e) {
                 Log.w(LOG_TAG, "Image no longer exists at the saved URI. The ticket will not be displayed. Ticket will be removed from database.");
                 ticketDb.delete(DatabaseSchema.TicketInfo.TABLE_NAME, DatabaseSchema.TicketInfo._ID + " = " + tickets.getLong(tickets.getColumnIndex(DatabaseSchema.TicketInfo._ID)), null);
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "A ticket in the database could not be added to list.", e);
             }
             tickets.moveToNext();
         }
@@ -382,7 +385,13 @@ public class WelcomeActivity extends AppCompatActivity {
         Log.d(LOG_TAG, "The user will now select an image to view");
         Intent intent = new Intent();
         intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        } else {
+            intent.setAction(Intent.ACTION_GET_CONTENT);
+        }
+
         startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
     }
 
@@ -420,6 +429,9 @@ public class WelcomeActivity extends AppCompatActivity {
                     return;
                 }
                 try {
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                        getContentResolver().takePersistableUriPermission(data.getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
                     ImageListItem newItem = new ImageListItem(data.getData(), imageAdapter);
                     imageAdapter.add(newItem);
                     Intent displayImage = new Intent(this, BoardingPassActivity.class);
