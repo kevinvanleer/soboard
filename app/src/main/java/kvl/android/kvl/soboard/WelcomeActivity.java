@@ -388,11 +388,13 @@ public class WelcomeActivity extends AppCompatActivity {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             intent.setAction(Intent.ACTION_OPEN_DOCUMENT);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
+            startActivityForResult(intent, PICK_IMAGE);
         } else {
             intent.setAction(Intent.ACTION_GET_CONTENT);
+            startActivityForResult(Intent.createChooser(intent, "Select image"), PICK_IMAGE);
         }
 
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE);
+
     }
 
     @Override
