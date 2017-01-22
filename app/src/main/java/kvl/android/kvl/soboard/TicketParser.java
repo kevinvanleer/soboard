@@ -9,6 +9,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.OpenableColumns;
 import android.util.Log;
 
@@ -24,7 +26,7 @@ import java.io.OutputStream;
 /**
  * Created by kvl on 10/16/16.
  */
-public class TicketParser extends AsyncTask {
+public class TicketParser extends AsyncTask implements Parcelable {
 
     private Uri imageUri;
     private String departureTime;
@@ -41,7 +43,44 @@ public class TicketParser extends AsyncTask {
     long recordId;
     boolean imageNotFound = true;
 
-    public String getFlightNumber() {
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(imageUri, flags);
+        dest.writeString(departureTime);
+        dest.writeString(flightNumber);
+        dest.writeString(airline);
+        dest.writeString(recognizedText);
+        dest.writeString(imageName);
+        dest.writeLong(recordId);
+    }
+
+    public void readFromParcel(Parcel in) {
+        imageUri = in.readParcelable(null);
+        departureTime = in.readString();
+        flightNumber = in.readString();
+        airline = in.readString();
+        recognizedText = in.readString();
+        imageName = in.readString();
+        recordId = in.readLong();
+    }
+
+    public static final Parcelable.Creator<TicketParser> CREATOR = new Parcelable.Creator<TicketParser>() {
+        public TicketParser createFromParcel(Parcel in) {
+            return new TicketParser(in);
+        }
+
+        public TicketParser[] newArray(int size) {
+            return new TicketParser[size];
+        }
+    };
+
+    public String getFlightNumber () {
         return flightNumber;
     }
 
@@ -96,6 +135,11 @@ public class TicketParser extends AsyncTask {
         this.departureTime = departureTime;
 
         getImageBitmap();
+    }
+
+
+    public TicketParser(Parcel in) {
+        readFromParcel(in);
     }
 
     @Override

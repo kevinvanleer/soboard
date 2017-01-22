@@ -47,10 +47,6 @@ public final class ImageListItem implements Parcelable {
         ticketDb = new TicketInfoHelper(App.getContext()).getWritableDatabase();
     }
 
-    public void removeFromDb() {
-        ticketDb.delete(DatabaseSchema.TicketInfo.TABLE_NAME, DatabaseSchema.TicketInfo._ID + " = " + recordId, null);
-    }
-
     public ImageListItem(Cursor items) throws FileNotFoundException {
         userDefinedName = items.getString(items.getColumnIndex(DatabaseSchema.TicketInfo.COLUMN_NAME_USER_DEFINED_NAME));
         recordId = items.getLong(items.getColumnIndex(DatabaseSchema.TicketInfo._ID));
@@ -62,6 +58,10 @@ public final class ImageListItem implements Parcelable {
 
         ticketInfo = new TicketParser(imageUri, airline, flightNumber, departureTime);
         ticketDb = new TicketInfoHelper(App.getContext()).getWritableDatabase();
+    }
+
+    public void removeFromDb() {
+        ticketDb.delete(DatabaseSchema.TicketInfo.TABLE_NAME, DatabaseSchema.TicketInfo._ID + " = " + recordId, null);
     }
 
     public long getRecordId() { return recordId; }
@@ -93,7 +93,7 @@ public final class ImageListItem implements Parcelable {
             if (ticketInfo != null && ticketInfo.getFlightNumber() != null) {
                 name += "Flight " + ticketInfo.getFlightNumber() + " ";
             }
-            if (name.isEmpty()) {
+            if (ticketInfo != null && name.isEmpty()) {
                 name = ticketInfo.getImageName();
             }
             name = name.trim();
@@ -138,10 +138,16 @@ public final class ImageListItem implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(this.imageUri, flags);
+        dest.writeParcelable(this.ticketInfo, flags);
+        dest.writeString(userDefinedName);
+        dest.writeLong(recordId);
     }
 
     private void readFromParcel(Parcel in) {
         imageUri = in.readParcelable(null);
+        ticketInfo = in.readParcelable(TicketParser.class.getClassLoader());
+        userDefinedName = in.readString();
+        recordId = in.readLong();
     }
 
     public static final Parcelable.Creator<ImageListItem> CREATOR = new Parcelable.Creator<ImageListItem>() {
