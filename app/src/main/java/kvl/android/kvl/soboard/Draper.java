@@ -20,8 +20,12 @@ public class Draper {
     final int TRIAL_INITIAL_COUNT = 10;
     final String LOG_TAG = "Draper";
 
-    Draper(Context context) {
+    Draper(Context context, boolean newUser) {
         settings = context.getSharedPreferences(AD_SETTINGS, Context.MODE_PRIVATE);
+        if (!newUser && !settings.contains(TRIAL_PERIOD_COUNT)) {
+            settings.edit().putInt(TRIAL_PERIOD_COUNT, 0).apply();
+        }
+
         //DEBUG: Uncomment to reset counter
         //settings.edit().putInt(TRIAL_PERIOD_COUNT, TRIAL_INITIAL_COUNT).apply();
         int trialCount = settings.getInt(TRIAL_PERIOD_COUNT, TRIAL_INITIAL_COUNT);
