@@ -63,7 +63,8 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.ticketDb = new TicketInfoHelper(App.getContext()).getReadableDatabase();
+        TicketInfoHelper dbHelper = new TicketInfoHelper(App.getContext());
+        ticketDb = dbHelper.getReadableDatabase();
         setContentView(R.layout.activity_welcome);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -78,7 +79,7 @@ public class WelcomeActivity extends AppCompatActivity {
                 .build();
         adBanner.loadAd(adRequest);
 
-        don = new Draper(context);
+        don = new Draper(context, dbHelper.isNewDb());
         don.requestNewInterstitial();
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -117,14 +118,17 @@ public class WelcomeActivity extends AppCompatActivity {
             rebuildFromDatabase();
         }
 
-        if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, HELP_NEW_USER);
-            Log.d(LOG_TAG, "requesting permissions to write external storage");
+        if(dbHelper.isNewDb()) {
+            if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, HELP_NEW_USER);
+                Log.d(LOG_TAG, "requesting permissions to write external storage");
+            } else {
+                Log.d(LOG_TAG, "permission already granted");
+                helpNewUser();
+            }
         } else {
-            Log.d(LOG_TAG, "permission already granted");
-            helpNewUser();
+            Log.v(LOG_TAG, "Database previously created, not running new user help");
         }
-
     }
 
     private void helpNewUser() {

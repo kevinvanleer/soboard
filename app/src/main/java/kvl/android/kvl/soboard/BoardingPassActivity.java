@@ -56,7 +56,7 @@ public class BoardingPassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        don = new Draper(context);
+        don = new Draper(context, true);
         don.requestNewInterstitial();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
