@@ -103,6 +103,7 @@ public class WelcomeActivity extends AppCompatActivity {
         imageAdapter = new ImageListAdapter(context, R.layout.image_list_item);
         boardingPassListView = (ListView) findViewById(R.id.boardingPassListView);
         boardingPassListView.setAdapter(imageAdapter);
+        boardingPassListView.setEmptyView(findViewById(R.id.emptyBoardingPassListView));
 
         initializeImageListClickListener();
         initializeImageListLongClickListener();
