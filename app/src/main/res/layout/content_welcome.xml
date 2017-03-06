@@ -23,6 +23,13 @@
         android:divider="@null"
         android:dividerHeight="0dp" />
 
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/emptyBoardingPassListView"
+        android:text="Touch the action button to add a new screenshot or saved ticket."
+        android:gravity="center" />
+
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"
         android:layout_width="wrap_content"
