@@ -30,7 +30,6 @@ import android.widget.ListView;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 
 import java.io.FileNotFoundException;
@@ -53,8 +52,8 @@ public class WelcomeActivity extends AppCompatActivity {
 
     SQLiteDatabase ticketDb;
 
-    InterstitialAd interstitialAd;
     AdView adBanner;
+    Draper don;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,25 +73,23 @@ public class WelcomeActivity extends AppCompatActivity {
                 .build();
         adBanner.loadAd(adRequest);
 
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(getResources().getString(R.string.banner_ad_unit_id));
-        requestNewInterstitial();
+        don = new Draper(context);
+        don.requestNewInterstitial();
 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (interstitialAd.isLoaded()) {
-                    Log.v(LOG_TAG, "Displaying ad.");
-                    interstitialAd.show();
+                if (don.interstitialReady()) {
+                    don.showInterstitialAd();
                 } else {
                     addNewTicket();
                 }
 
-                interstitialAd.setAdListener(new AdListener() {
+                don.setInterstitialListener(new AdListener() {
                     @Override
                     public void onAdClosed() {
                         super.onAdClosed();
-                        requestNewInterstitial();
+                        don.requestNewInterstitial();
                         addNewTicket();
                     }
                 });
@@ -123,14 +120,6 @@ public class WelcomeActivity extends AppCompatActivity {
             Log.d(LOG_TAG, "permission already granted");
             getImage();
         }
-    }
-
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("A11960FBF8D4DAB9AFC3DE56A7D7C0D8")
-                .build();
-
-        interstitialAd.loadAd(adRequest);
     }
 
     private void rebuildFromDatabase() {

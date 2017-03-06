@@ -14,19 +14,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.InterstitialAd;
-
 import java.io.FileNotFoundException;
 
 public class BoardingPassActivity extends AppCompatActivity {
     private static final String LOG_TAG = "BoardingPassActivity";
+    Draper don;
 
     @Override
     public void onBackPressed() {
-        if (interstitialAd.isLoaded()) {
+        if (don.interstitialReady()) {
             Log.v(LOG_TAG, "Displaying ad.");
-            interstitialAd.show();
+            don.showInterstitialAd();
         }
 
         super.onBackPressed();
@@ -35,17 +33,6 @@ public class BoardingPassActivity extends AppCompatActivity {
     Bitmap boardingPass;
     ImageView imageView;
     Activity context = this;
-
-    InterstitialAd interstitialAd;
-
-
-    private void requestNewInterstitial() {
-        AdRequest adRequest = new AdRequest.Builder()
-                .addTestDevice("A11960FBF8D4DAB9AFC3DE56A7D7C0D8")
-                .build();
-
-        interstitialAd.loadAd(adRequest);
-    }
 
     void adjustBrightness() {
         WindowManager.LayoutParams lp = getWindow().getAttributes();
@@ -69,9 +56,8 @@ public class BoardingPassActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId("ca-app-pub-1470341388733034/9951540908");
-        requestNewInterstitial();
+        don = new Draper(context);
+        don.requestNewInterstitial();
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
