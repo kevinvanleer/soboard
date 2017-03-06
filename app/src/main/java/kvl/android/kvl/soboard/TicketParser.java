@@ -69,9 +69,13 @@ public class TicketParser extends AsyncTask {
     public String getImageName() {
         if(imageName == null) {
             Cursor imageCursor = App.getContext().getContentResolver().query(imageUri, null, null, null, null);
+            if(imageCursor == null) {
+                return "No Name";
+            }
             int nameIndex = imageCursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
             imageCursor.moveToFirst();
             imageName = imageCursor.getString(nameIndex);
+            imageCursor.close();
         }
         return imageName;
     }

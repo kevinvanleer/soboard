@@ -33,7 +33,6 @@ public final class ImageListItem implements Parcelable {
 
     public ImageListItem(Uri image, ImageListAdapter listAdapter) throws FileNotFoundException {
         this.imageUri = image;
-
         ticketDb = new TicketInfoHelper(App.getContext()).getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(DatabaseSchema.TicketInfo.COLUMN_NAME_IMAGE_URI, imageUri.toString());

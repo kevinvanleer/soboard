@@ -4,11 +4,14 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,10 +41,12 @@ import java.util.ArrayList;
 public class WelcomeActivity extends AppCompatActivity {
 
     private static final String LOG_TAG = "WelcomeActivity";
+    private static final String FIRST_RUN = "first_run";
 
     private static final int PICK_IMAGE = 1;
     private static final int ADD_NEW_TICKET = 2;
     private static final int REBUILD_TICKET_LIST = 3;
+    private static final int HELP_NEW_USER = 4;
 
     ListView boardingPassListView;
     static final String BOARDING_PASS_EXTRA = "kvl.android.kvl.soboard.boarding_pass";
@@ -110,6 +115,35 @@ public class WelcomeActivity extends AppCompatActivity {
             rebuildFromBundle(savedInstanceState);
         } else {
             rebuildFromDatabase();
+        }
+
+        if (PackageManager.PERMISSION_GRANTED != ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            ActivityCompat.requestPermissions(context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, HELP_NEW_USER);
+            Log.d(LOG_TAG, "requesting permissions to write external storage");
+        } else {
+            Log.d(LOG_TAG, "permission already granted");
+            helpNewUser();
+        }
+
+    }
+
+    private void helpNewUser() {
+        try {
+            SharedPreferences settings = getPreferences(MODE_PRIVATE);
+            if(settings.getBoolean(FIRST_RUN, true)) {
+                settings.edit().putBoolean(FIRST_RUN, false).apply();
+                Uri imageUri = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE +
+                        "://" + getResources().getResourcePackageName(R.drawable.sample_boarding_pass)
+                        + '/' + getResources().getResourceTypeName(R.drawable.sample_boarding_pass) + '/' + getResources().getResourceEntryName(R.drawable.sample_boarding_pass));
+                context.getContentResolver().openInputStream(imageUri);
+                ImageListItem newItem = new ImageListItem(imageUri, imageAdapter);
+                newItem.setName("Sample Boarding Pass\nTouch to view\nSwipe to remove");
+                imageAdapter.add(newItem);
+            } else {
+                Log.v(LOG_TAG, "Not users first run, not providing help");
+            }
+        } catch (FileNotFoundException e) {
+            Log.v(LOG_TAG, "Sample boarding pass not found.");
         }
     }
 
@@ -406,6 +440,15 @@ public class WelcomeActivity extends AppCompatActivity {
                 } else {
                     Log.d(LOG_TAG, "WRITE_EXTERNAL_STORAGE permission denied");
                 }
+                break;
+            case HELP_NEW_USER:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Log.d(LOG_TAG, "WRITE_EXTERNAL_STORAGE permission granted");
+                    helpNewUser();
+                } else {
+                    Log.d(LOG_TAG, "WRITE_EXTERNAL_STORAGE permission denied");
+                }
+                break;
             default:
                 break;
         }
