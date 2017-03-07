@@ -284,8 +284,10 @@ public class WelcomeActivity extends AppCompatActivity {
                         public void onAnimationEnd(Animator animation) {
                             //deleteView.setVisibility(View.GONE);
                             //NOTE THIS WORKS IF I MOVE THE REMOVE CALL OUT OF THE ANIMATION
-                            imageAdapter.getItem(deletePosition).removeFromDb();
-                            imageAdapter.remove(imageAdapter.getItem(deletePosition));
+                            if((deletePosition >= 0) && (deletePosition < imageAdapter.getCount())) {
+                                imageAdapter.getItem(deletePosition).removeFromDb();
+                                imageAdapter.remove(imageAdapter.getItem(deletePosition));
+                            }
                         }
                     });
             }
