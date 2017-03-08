@@ -1,6 +1,8 @@
 package kvl.android.kvl.soboard;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 
@@ -22,12 +25,19 @@ public class BoardingPassActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (don.interstitialReady()) {
-            Log.v(LOG_TAG, "Displaying ad.");
-            don.showInterstitialAd();
-        }
+        KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        if(! myKM.inKeyguardRestrictedInputMode()) {
+            if (don.interstitialReady()) {
+                Log.v(LOG_TAG, "Displaying ad.");
+                don.showInterstitialAd();
+            }
 
-        super.onBackPressed();
+            super.onBackPressed();
+        } else {
+            Log.v(LOG_TAG, "Screen is locked, suppressing back button.");
+            Toast toast = Toast.makeText(this, "Press home to dismiss ticket", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     Bitmap boardingPass;
