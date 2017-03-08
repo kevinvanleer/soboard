@@ -49,7 +49,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private static final int HELP_NEW_USER = 4;
 
     ListView boardingPassListView;
-    static final String BOARDING_PASS_EXTRA = "kvl.android.kvl.soboard.boarding_pass";
+    static final String BOARDING_PASS_URI_KEY = "kvl.android.kvl.soboard.boarding_pass_uri_key";
+    static final String BOARDING_PASS_NAME_KEY = "kvl.android.kvl.sobard.boarding_pass_name_key";
     static final String SAVED_IMAGE_LIST = "kvl.android.kvl.soboard.savedImages";
 
     ImageListAdapter imageAdapter;
@@ -393,7 +394,8 @@ public class WelcomeActivity extends AppCompatActivity {
                 }
                 imageAdapter.stopEditing(boardingPassListView);
                 Intent displayImage = new Intent(context, BoardingPassActivity.class);
-                displayImage.putExtra(BOARDING_PASS_EXTRA, imageAdapter.getItem(position).getImageUri());
+                displayImage.putExtra(BOARDING_PASS_URI_KEY, imageAdapter.getItem(position).getImageUri());
+                displayImage.putExtra(BOARDING_PASS_NAME_KEY, imageAdapter.getItem(position).getName());
                 startActivity(displayImage);
             }
         });
@@ -476,7 +478,8 @@ public class WelcomeActivity extends AppCompatActivity {
                     ImageListItem newItem = new ImageListItem(data.getData(), imageAdapter);
                     imageAdapter.add(newItem);
                     Intent displayImage = new Intent(this, BoardingPassActivity.class);
-                    displayImage.putExtra(BOARDING_PASS_EXTRA, newItem.getImageUri());
+                    displayImage.putExtra(BOARDING_PASS_URI_KEY, newItem.getImageUri());
+                    displayImage.putExtra(BOARDING_PASS_NAME_KEY, newItem.getName());
                     startActivity(displayImage);
                 } catch (FileNotFoundException e) {
                     Log.e(LOG_TAG, "Chosen image does not exist, this can't happen");

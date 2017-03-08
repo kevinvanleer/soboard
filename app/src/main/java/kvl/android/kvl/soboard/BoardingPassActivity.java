@@ -1,33 +1,53 @@
 package kvl.android.kvl.soboard;
 
 import android.app.Activity;
+import android.app.KeyguardManager;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.io.FileNotFoundException;
 
 public class BoardingPassActivity extends AppCompatActivity {
     private static final String LOG_TAG = "BoardingPassActivity";
+    private final int ACTIVE_TICKET_NOTIFICATION = 1; //this.getResources().getInteger(R.integer.active_ticket_notification);
     Draper don;
+    NotificationCompat.Builder notificationBuilder;
+    NotificationManager notificationManager;
 
     @Override
     public void onBackPressed() {
-        if (don.interstitialReady()) {
-            Log.v(LOG_TAG, "Displaying ad.");
-            don.showInterstitialAd();
-        }
+        KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+        if(! myKM.inKeyguardRestrictedInputMode()) {
+            if (don.interstitialReady()) {
+                Log.v(LOG_TAG, "Displaying ad.");
+                don.showInterstitialAd();
+            }
 
-        super.onBackPressed();
+            notificationManager.cancel(ACTIVE_TICKET_NOTIFICATION);
+
+            super.onBackPressed();
+        } else {
+            Log.v(LOG_TAG, "Screen is locked, suppressing back button.");
+            Toast toast = Toast.makeText(this, "Press home to dismiss ticket", Toast.LENGTH_SHORT);
+            toast.show();
+        }
     }
 
     Bitmap boardingPass;
@@ -70,7 +90,9 @@ public class BoardingPassActivity extends AppCompatActivity {
         }
 
         Intent input = getIntent();
-        Uri imageUri = input.getParcelableExtra(WelcomeActivity.BOARDING_PASS_EXTRA);
+        Uri imageUri = input.getParcelableExtra(WelcomeActivity.BOARDING_PASS_URI_KEY);
+        Log.v(LOG_TAG, imageUri.toString());
+        showNotification(input);
 
         imageView = (ImageView) findViewById(R.id.boardingPassImageView);
 
@@ -96,6 +118,24 @@ public class BoardingPassActivity extends AppCompatActivity {
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+    }
+
+    private void showNotification(Intent origIntent) {
+        notificationBuilder = new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.mipmap.soboard_launcher)
+                        .setContentTitle("You have an active ticket")
+                        .setContentText(String.format("Tap to view %s", origIntent.getStringExtra(WelcomeActivity.BOARDING_PASS_NAME_KEY)))
+                        .setPriority(Notification.PRIORITY_MAX).setOngoing(true);
+
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
+        stackBuilder.addParentStack(BoardingPassActivity.class);
+        stackBuilder.addNextIntent(origIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        notificationBuilder.setContentIntent(resultPendingIntent);
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager.notify(ACTIVE_TICKET_NOTIFICATION, notificationBuilder.build());
     }
 
     @Override
