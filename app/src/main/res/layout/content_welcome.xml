@@ -27,7 +27,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/emptyBoardingPassListView"
-        android:text="Touch the action button to add a new screenshot or saved ticket image."
+        android:text="@string/empty_boarding_pass_list_message"
         android:gravity="center" />
 
     <com.google.android.gms.ads.AdView
