@@ -35,7 +35,7 @@ public class Draper {
         }
 
         interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(context.getResources().getString(R.string.banner_ad_unit_id));
+        interstitialAd.setAdUnitId(context.getResources().getString(R.string.interstitial_ad_unit_id));
     }
 
     public void requestNewInterstitial() {

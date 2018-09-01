@@ -6,7 +6,9 @@
     <string name="ticket_name_hint">Enter description</string>
     <string name="ticket_thumbnail">Ticket thumbnail</string>
     <string name="description_deleteTicket">Remove ticket</string>
-    <string name="banner_ad_unit_id">ca-app-pub-1470341388733034/9951540908</string>
+    <string name="interstitial_ad_unit_id">ca-app-pub-1470341388733034/9951540908</string>
+    <string name="banner_ad_unit_id">ca-app-pub-1470341388733034/3398000715</string>
+    <!--TESTINGstring name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string-->
     <string name="ad_mob_app_id">ca-app-pub-1470341388733034~3994030504</string>
     <string name="empty_ticket_list_message">Touch the action button to add a new screenshot or saved ticket image.</string>
     <string name="empty_boarding_pass_list_message">Touch the action button to add a new screenshot or saved ticket image.</string>
