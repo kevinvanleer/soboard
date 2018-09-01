@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "660266319173",
+    "firebase_url": "https://so-board.firebaseio.com",
+    "project_id": "so-board",
+    "storage_bucket": "so-board.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:660266319173:android:2151494c792d672e",
+        "android_client_info": {
+          "package_name": "kvl.android.kvl.soboard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "660266319173-83k6133f6q07kdp2k2g86ns4tm9l8i6s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDv9S_EYYcmNGs7We4oh6RA4ebhxVpfTs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-1470341388733034~3994030504"
+    }
+  ],
+  "configuration_version": "1"
+}
