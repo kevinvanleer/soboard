@@ -43,6 +43,7 @@ public class Draper {
             Log.v(LOG_TAG, "Requesting new interstitial ad");
             AdRequest adRequest = new AdRequest.Builder()
                     .addTestDevice("A11960FBF8D4DAB9AFC3DE56A7D7C0D8")
+                    .addTestDevice("B89AE360A6406986F122016477DFF9F3")
                     .build();
 
             interstitialAd.loadAd(adRequest);
