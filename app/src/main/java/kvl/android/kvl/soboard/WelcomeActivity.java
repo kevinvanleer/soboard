@@ -3,6 +3,7 @@ package kvl.android.kvl.soboard;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -217,6 +219,25 @@ public class WelcomeActivity extends AppCompatActivity {
     boolean suppressLongPress = true;
     boolean scrolling = false;
     boolean sliding = false;
+
+    private void initializeImageListClickListener() {
+        boardingPassListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (imageAdapter.isEditing()) {
+                    return;
+                }
+                imageAdapter.stopEditing(boardingPassListView);
+                Intent displayImage = new Intent(context, BoardingPassActivity.class);
+                displayImage.putExtra(BOARDING_PASS_URI_KEY, imageAdapter.getItem(position).getImageUri());
+                displayImage.putExtra(BOARDING_PASS_NAME_KEY, imageAdapter.getItem(position).getName());
+                startActivity(displayImage);
+            }
+        });
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
     private void initializeImageListTouchListener() {
         boardingPassListView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -277,20 +298,34 @@ public class WelcomeActivity extends AppCompatActivity {
                 final int deletePosition = boardingPassListView.getPositionForView(deleteView);
                 Log.d(LOG_TAG, "Deleting item at " + deletePosition);
                 moveView.animate()
-                    .translationXBy(boardingPassListView.getWidth())
-                    .setDuration(200)
-                    .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .setListener(new AnimatorListenerAdapter() {
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            //deleteView.setVisibility(View.GONE);
-                            //NOTE THIS WORKS IF I MOVE THE REMOVE CALL OUT OF THE ANIMATION
-                            if((deletePosition >= 0) && (deletePosition < imageAdapter.getCount())) {
-                                imageAdapter.getItem(deletePosition).removeFromDb();
-                                imageAdapter.remove(imageAdapter.getItem(deletePosition));
+                        .translationXBy(boardingPassListView.getWidth())
+                        .setDuration(200)
+                        .setInterpolator(new AccelerateDecelerateInterpolator())
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                //deleteView.setVisibility(View.GONE);
+                                //NOTE THIS WORKS IF I MOVE THE REMOVE CALL OUT OF THE ANIMATION
+                                if((deletePosition >= 0) && (deletePosition < imageAdapter.getCount())) {
+                                    final ImageListItem deletedItem = imageAdapter.getItem(deletePosition);
+                                    imageAdapter.remove(deletedItem);
+                                    String message = "Removed " + deletedItem.getName();
+
+                                    Snackbar.make(boardingPassListView, message, Snackbar.LENGTH_LONG).setAction("UNDO", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            imageAdapter.insert(deletedItem, deletePosition);
+                                            Snackbar.make(boardingPassListView, "Restored!", Snackbar.LENGTH_SHORT).show();
+                                        }
+                                    }).setCallback(new Snackbar.Callback(){
+                                        @Override
+                                        public void onDismissed(Snackbar snackbar, int event) {
+                                            deletedItem.removeFromDb();
+                                        }
+                                    }).show();
+                                }
                             }
-                        }
-                    });
+                        });
             }
 
             private boolean handleActionMove(MotionEvent event) {
@@ -302,7 +337,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     handleSwipe(event);
                 } else {
                     if(Math.abs(event.getRawX() - startX)  < 5 &&
-                        Math.abs(event.getRawY() - startY)  < 5) {
+                            Math.abs(event.getRawY() - startY)  < 5) {
                         Log.v(LOG_TAG, "Haven't moved");
                     } else {
                         Log.v(LOG_TAG, "Cancelling long press");
@@ -380,23 +415,6 @@ public class WelcomeActivity extends AppCompatActivity {
                 startLeft = deleteView.getLeft();
                 longPressHandler.postDelayed(handleLongPress, android.view.ViewConfiguration.getLongPressTimeout());
                 return false;
-            }
-        });
-    }
-
-    private void initializeImageListClickListener() {
-        boardingPassListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (imageAdapter.isEditing()) {
-                    return;
-                }
-                imageAdapter.stopEditing(boardingPassListView);
-                Intent displayImage = new Intent(context, BoardingPassActivity.class);
-                displayImage.putExtra(BOARDING_PASS_URI_KEY, imageAdapter.getItem(position).getImageUri());
-                displayImage.putExtra(BOARDING_PASS_NAME_KEY, imageAdapter.getItem(position).getName());
-                startActivity(displayImage);
             }
         });
     }
