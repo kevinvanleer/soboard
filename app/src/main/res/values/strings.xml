@@ -12,4 +12,5 @@
     <string name="ad_mob_app_id">ca-app-pub-1470341388733034~3994030504</string>
     <string name="empty_ticket_list_message">Touch the action button to add a new screenshot or saved ticket image.</string>
     <string name="empty_boarding_pass_list_message">Touch the action button to add a new screenshot or saved ticket image.</string>
+    <string name="fab_content_description">Add a ticket name</string>
 </resources>
