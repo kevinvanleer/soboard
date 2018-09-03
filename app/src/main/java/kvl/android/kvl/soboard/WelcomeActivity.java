@@ -277,7 +277,9 @@ public class WelcomeActivity extends AppCompatActivity {
 
                 if (!(sliding || scrolling)) {
                     Log.d(LOG_TAG, "This is a click");
-                    deleteView.performClick();
+                    if(deleteView != null) {
+                        deleteView.performClick();
+                    }
                     returning = false;
                 } else {
                     if (event.getEventTime() - event.getDownTime() < 200) {
@@ -286,10 +288,14 @@ public class WelcomeActivity extends AppCompatActivity {
                         }
                     }
                     if (shouldDelete) {
-                        deleteItem(deleteView);
+                        if(deleteView != null) {
+                            deleteItem(deleteView);
+                        }
                     } else {
-                        moveView.setAlpha(1f);
-                        moveView.setLeft(startLeft);
+                        if(moveView != null) {
+                            moveView.setAlpha(1f);
+                            moveView.setLeft(startLeft);
+                        }
                     }
                 }
 
@@ -410,14 +416,18 @@ public class WelcomeActivity extends AppCompatActivity {
                 for (int i = 0; i < childCount; i++) {
                     child = boardingPassListView.getChildAt(i);
                     child.getHitRect(rect);
+
                     if (rect.contains(x, y)) {
                         deleteView = child;
                         break;
                     }
                 }
-                moveView = deleteView.findViewById(R.id.layout_imageListItem);
-                startLeft = deleteView.getLeft();
-                longPressHandler.postDelayed(handleLongPress, android.view.ViewConfiguration.getLongPressTimeout());
+                if (deleteView != null) {
+                    moveView = deleteView.findViewById(R.id.layout_imageListItem);
+                    startLeft = deleteView.getLeft();
+                    longPressHandler.postDelayed(handleLongPress, android.view.ViewConfiguration.getLongPressTimeout());
+                }
+
                 return false;
             }
         });
