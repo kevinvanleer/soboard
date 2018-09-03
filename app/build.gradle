@@ -7,7 +7,7 @@ android {
         applicationId "kvl.android.kvl.soboard"
         minSdkVersion 15
         targetSdkVersion 27
-        versionCode 15
+        versionCode 16
         versionName "1.6"
     }
     buildTypes {
