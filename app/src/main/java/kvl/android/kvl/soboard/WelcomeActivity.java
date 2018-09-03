@@ -229,12 +229,16 @@ public class WelcomeActivity extends AppCompatActivity {
                     return;
                 }
                 imageAdapter.stopEditing(boardingPassListView);
-                Intent displayImage = new Intent(context, BoardingPassActivity.class);
-                displayImage.putExtra(BOARDING_PASS_URI_KEY, imageAdapter.getItem(position).getImageUri());
-                displayImage.putExtra(BOARDING_PASS_NAME_KEY, imageAdapter.getItem(position).getName());
-                startActivity(displayImage);
+                startBoardingPassActivity(imageAdapter.getItem(position));
             }
         });
+    }
+
+    private void startBoardingPassActivity(ImageListItem item) {
+        Intent displayImage = new Intent(context, BoardingPassActivity.class);
+        displayImage.putExtra(BOARDING_PASS_URI_KEY, item.getImageUri());
+        displayImage.putExtra(BOARDING_PASS_NAME_KEY, item.getName());
+        startActivity(displayImage);
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -495,10 +499,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                     ImageListItem newItem = new ImageListItem(data.getData(), imageAdapter);
                     imageAdapter.add(newItem);
-                    Intent displayImage = new Intent(this, BoardingPassActivity.class);
-                    displayImage.putExtra(BOARDING_PASS_URI_KEY, newItem.getImageUri());
-                    displayImage.putExtra(BOARDING_PASS_NAME_KEY, newItem.getName());
-                    startActivity(displayImage);
+                    startBoardingPassActivity(newItem);
                 } catch (FileNotFoundException e) {
                     Log.e(LOG_TAG, "Chosen image does not exist, this can't happen");
                 }
