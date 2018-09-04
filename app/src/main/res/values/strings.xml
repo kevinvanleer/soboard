@@ -13,4 +13,5 @@
     <string name="empty_ticket_list_message">Touch the action button to add a new screenshot or saved ticket image.</string>
     <string name="empty_boarding_pass_list_message">Touch the action button to add a new screenshot or saved ticket image.</string>
     <string name="fab_content_description">Add a ticket name</string>
+    <string name="advertisement">Advertisement</string>
 </resources>
