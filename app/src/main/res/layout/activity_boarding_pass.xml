@@ -12,12 +12,13 @@
          android:fitsSystemWindows. -->
 
     <ImageView
+        android:id="@+id/boardingPassImageView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/boardingPassImageView"
+        android:background="@android:color/background_dark"
+        android:baselineAlignBottom="true"
         android:contentDescription="@string/boarding_pass"
         android:contextClickable="false"
-        android:baselineAlignBottom="true"
         android:src="@android:drawable/ic_dialog_alert" />
 
 </FrameLayout>
