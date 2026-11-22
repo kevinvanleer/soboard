@@ -9,9 +9,6 @@
     <string name="untitled">Untitled</string>
     <string name="sample_name">Sample boarding pass</string>
     <string name="rename">Rename</string>
-    <string name="name_label">Name</string>
-    <string name="save">Save</string>
-    <string name="cancel">Cancel</string>
     <string name="delete">Delete</string>
     <string name="removed">Removed %1$s</string>
     <string name="undo">Undo</string>
