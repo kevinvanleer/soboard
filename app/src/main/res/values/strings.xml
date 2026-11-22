@@ -1,17 +1,23 @@
 <resources>
     <string name="app_name">So Board!</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_boarding_pass">BoardingPassActivity</string>
-    <string name="boarding_pass">boarding pass</string>
-    <string name="ticket_name_hint">Enter description</string>
-    <string name="ticket_thumbnail">Ticket thumbnail</string>
-    <string name="description_deleteTicket">Remove ticket</string>
-    <string name="interstitial_ad_unit_id">ca-app-pub-1470341388733034/9951540908</string>
-    <string name="banner_ad_unit_id">ca-app-pub-1470341388733034/3398000715</string>
-    <!--TESTINGstring name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string-->
-    <string name="ad_mob_app_id">ca-app-pub-1470341388733034~3994030504</string>
-    <string name="empty_ticket_list_message">Touch the action button to add a new screenshot or saved ticket image.</string>
-    <string name="empty_boarding_pass_list_message">Touch the action button to add a new screenshot or saved ticket image.</string>
-    <string name="fab_content_description">Add a ticket name</string>
-    <string name="advertisement">Advertisement</string>
+    <string name="share_label">Keep on screen</string>
+    <string name="banner_ad_unit_id" translatable="false">ca-app-pub-1470341388733034/3398000715</string>
+    <string name="ad_mob_app_id" translatable="false">ca-app-pub-1470341388733034~3994030504</string>
+    <string name="empty_list_title">Nothing pinned yet</string>
+    <string name="empty_list_message">Add a boarding pass, ticket, recipe or any image. It stays on screen at full brightness and comes back with the power button, no unlock needed.</string>
+    <string name="add_image">Add image</string>
+    <string name="untitled">Untitled</string>
+    <string name="sample_name">Sample boarding pass</string>
+    <string name="rename">Rename</string>
+    <string name="name_label">Name</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="removed">Removed %1$s</string>
+    <string name="undo">Undo</string>
+    <string name="import_failed">Couldn\'t open that image</string>
+    <string name="done">Done</string>
+    <string name="channel_active">Active image</string>
+    <string name="notification_title">%1$s is pinned</string>
+    <string name="notification_text">Tap to show it again</string>
 </resources>
