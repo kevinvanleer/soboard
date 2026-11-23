@@ -1,2 +1,0 @@
-include ':app', ':libraries'
-include ':libraries:tess-two'
